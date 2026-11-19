@@ -11,7 +11,7 @@ Karena percakapan (*chat*) AI bersifat privat untuk masing-masing akun, anggota 
 ### Cara 1: Menghubungkan Repository GitHub Ini (Direkomendasikan)
 1. Buka **Antigravity** di akun masing-masing.
 2. Pastikan plugin **Google Drive (`gdrive`)** dan **Google Sheets (`gsheets`)** sudah terhubung (*Connected*).
-3. Pilih repository **`chikenbai/oppo-cctv-audit-agent`** sebagai workspace (atau berikan link repo ini di chat).
+3. Pilih repository **`chikenbai/oppo-cctv-audit-agent`** sebagai workspace (atau berikan link repo ini di chat https://github.com/chikenbai/oppo-cctv-audit-agent.git).
 4. Pada chat pertama, ketik:
    > *"Baca file `SKILL.md` di repository ini lalu simpan sebagai custom skill `oppo-cctv-audit`."*
 5. Setelah skill tersimpan sekali, setiap hari Anda cukup mengetik perintah singkat:
