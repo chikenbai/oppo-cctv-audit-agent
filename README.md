@@ -34,12 +34,11 @@ Jika pengguna tidak menghubungkan GitHub, cukup buka file [`MASTER_PROMPT.md`](.
 ## Cara Merevisi Aturan SOP ke Depannya
 
 > **Aturan Sinkronisasi Otomatis:**
-> *"Setiap kali pengguna meminta revisi atau tambahan aturan SOP, Agent WAJIB memperbarui ketiga tempat ini secara bersamaan: (1) Custom Skill `oppo-cctv-audit` via `update_skill`, (2) Repo GitHub `chikenbai/oppo-cctv-audit-agent` (`SKILL.md` & `MASTER_PROMPT.md`), dan (3) Folder Google Drive `00_AGENT_AUDIT_SKILL_&_PROMPT`."*
+> *"Setiap kali pengguna meminta revisi atau tambahan aturan SOP, Agent WAJIB memperbarui kedua tempat ini secara bersamaan: (1) Custom Skill `oppo-cctv-audit` di Antigravity (`update_skill`), dan (2) Repo GitHub `chikenbai/oppo-cctv-audit-agent` (`SKILL.md` & `MASTER_PROMPT.md`)."*
 
 Jika di kemudian hari ada perubahan aturan dari manajemen:
 1. Anda cukup mengatakan kepada Agent di chat:
    > *"Mulai sekarang aturan [X] diubah menjadi [Y]."*
-2. Agent akan otomatis memperbarui ketiga tempat tersebut secara bersamaan:
-   - **(1) Custom Skill `oppo-cctv-audit`** di akun Antigravity Anda (`update_skill`),
-   - **(2) Repository GitHub `chikenbai/oppo-cctv-audit-agent`** (`SKILL.md` & `MASTER_PROMPT.md`), dan
-   - **(3) Folder Google Drive `00_AGENT_AUDIT_SKILL_&_PROMPT`** (`SKILL.md` & `MASTER_PROMPT.md`).
+2. Agent akan otomatis memperbarui kedua tempat tersebut secara bersamaan:
+   - **(1) Custom Skill `oppo-cctv-audit`** di akun Antigravity Anda (`update_skill`), dan
+   - **(2) Repository GitHub `chikenbai/oppo-cctv-audit-agent`** (`SKILL.md` & `MASTER_PROMPT.md`).

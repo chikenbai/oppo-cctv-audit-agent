@@ -10,11 +10,10 @@ Gunakan skill ini setiap kali pengguna meminta pemeriksaan/audit rekaman CCTV Se
 ---
 
 ## 0. Aturan Sinkronisasi Otomatis Saat Ada Revisi SOP (Wajib)
-Setiap kali pengguna meminta revisi atau tambahan aturan SOP, Agent WAJIB memperbarui ketiga tempat ini secara bersamaan: (1) Custom Skill `oppo-cctv-audit` via `update_skill`, (2) Repo GitHub `chikenbai/oppo-cctv-audit-agent` (`SKILL.md` & `MASTER_PROMPT.md`), dan (3) Folder Google Drive `00_AGENT_AUDIT_SKILL_&_PROMPT`.
+Setiap kali pengguna meminta revisi atau tambahan aturan SOP, Agent WAJIB memperbarui kedua tempat ini secara bersamaan: (1) Custom Skill `oppo-cctv-audit` di Antigravity (`update_skill`), dan (2) Repo GitHub `chikenbai/oppo-cctv-audit-agent` (`SKILL.md`, `MASTER_PROMPT.md`, & `README.md`). **Jangan** mengunggah atau menyimpan file skill/prompt ke Google Drive.
 
-1. **Update Custom Skill:** Segera panggil `update_skill` pada skill `oppo-cctv-audit` agar perubahan tersimpan permanen di akun Antigravity pengguna.
+1. **Update Custom Skill (`oppo-cctv-audit`):** Segera perbarui skill `oppo-cctv-audit` agar perubahan tersimpan permanen di akun Antigravity pengguna.
 2. **Update GitHub Repository (`chikenbai/oppo-cctv-audit-agent`):** Segera perbarui file `SKILL.md` dan `MASTER_PROMPT.md` di repo `chikenbai/oppo-cctv-audit-agent` lalu jalankan `git commit` dan `git push origin main` (atau via GitHub Contents API jika repo belum di-clone).
-3. **Update Google Drive Backup (`00_AGENT_AUDIT_SKILL_&_PROMPT` - Folder ID `1ghzDLG93TFrxSH3-eNxLl5BJmSFX3rav`):** Perbarui juga file `SKILL.md` (ID: `1eiE244YmO0yqGN2UWD7h6-fiZceV6cn3`) dan `MASTER_PROMPT.md` (ID: `1G3tzi3NxJJvrZcAD0H6-7y8j_4vBFu6e`) menggunakan `gdrive mutate update <FILE_ID> <local_path>` agar anggota tim yang mengakses dari Google Drive selalu mendapatkan versi terbaru.
 
 ---
 
