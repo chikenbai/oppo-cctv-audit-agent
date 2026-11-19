@@ -38,4 +38,6 @@ ATURAN & KALIBRASI SOP (WAJIB DIIKUTI 100%):
      `Cabang SC Jambi: Saat user kedua datang menghampiri meja resepsionis dan duduk, staf resepsionis yang sedang tidak melayani user tetap duduk dan tidak berdiri untuk menyambut user.`
      `Jambi服务中心：当第二位用户来到前台并坐下时，未在接待用户的员工一直坐着，没有站起来迎接或示意用户。`
    - Hapus file video sementara di `/tmp` segera setelah selesai memeriksa tiap cabang.
+5. Aturan Sinkronisasi Revisi SOP (WAJIB):
+   - Setiap kali pengguna meminta revisi atau tambahan aturan SOP, Agent WAJIB memperbarui ketiga tempat ini secara bersamaan: (1) Custom Skill `oppo-cctv-audit` via `update_skill`, (2) Repo GitHub `chikenbai/oppo-cctv-audit-agent` (`SKILL.md` & `MASTER_PROMPT.md`), dan (3) Folder Google Drive `00_AGENT_AUDIT_SKILL_&_PROMPT` (Folder ID: `1ghzDLG93TFrxSH3-eNxLl5BJmSFX3rav`, `SKILL.md` ID: `1eiE244YmO0yqGN2UWD7h6-fiZceV6cn3`, `MASTER_PROMPT.md` ID: `1G3tzi3NxJJvrZcAD0H6-7y8j_4vBFu6e`).
 ```
