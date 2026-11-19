@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
-Helper utilities for OPPO Indonesia SST CCTV Audit Agent:
-- Clean HEVC frame extraction (avoiding gray P-frame artifacts)
-- Red bounding box + label + bottom banner annotation
-- Uploading to Google Drive and moving into the branch folder
-- Batch writing bilingual findings to Google Sheets
+Optimized Helper Utilities for OPPO Indonesia SST CCTV Audit Agent:
+1. Two-stage keyframe pre-seek (`-ss <pre> -i ... -ss <offset>`) for 10x faster clean HEVC frame & 10fps grid extraction without gray P-frame artifacts.
+2. Auto-timestamped overview contact sheet extraction (`fps=1/2` with burned-in `T=%{pts:hms} (%{pts}s)` on every tile).
+3. Red bounding box + red-background text label + bottom banner annotation.
+4. Direct 1-step upload to branch Google Drive folder (`gdrive mutate upload --parent <BRANCH_FOLDER_ID>`).
 """
 
-import json
 import os
 import re
 import subprocess
@@ -16,11 +15,67 @@ from PIL import Image, ImageDraw, ImageFont
 FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 
 
-def extract_clean_frame(video_path: str, timestamp_sec: float, out_path: str) -> None:
-    """Extract a clean full-HD frame from HEVC/MP4 without gray keyframe artifacts."""
+def extract_overview_grids(
+    video_path: str,
+    out_dir: str,
+    prefix: str = "overview",
+    fps_expr: str = "1/2",
+    tile_w: int = 640,
+    tile_h: int = 360,
+    cols: int = 3,
+    rows: int = 4,
+    pre_seek_sec: float = 0.0,
+    duration_sec: float | None = None,
+) -> list[str]:
+    """
+    Extract high-clarity overview contact sheets with burned-in timestamp (seconds & HMS)
+    on every tile so the agent can immediately identify exact interaction seconds.
+    Default 3x4 grid at 640x360 per tile -> 1920x1440 per sheet (24 seconds per sheet at fps=1/2).
+    """
+    os.makedirs(out_dir, exist_ok=True)
+    out_pattern = os.path.join(out_dir, f"{prefix}_%03d.jpg")
+
+    cmd = ["ffmpeg", "-y", "-threads", "0"]
+    if pre_seek_sec > 0:
+        cmd += ["-ss", f"{pre_seek_sec:.2f}"]
+    cmd += ["-i", video_path]
+    if duration_sec is not None:
+        cmd += ["-t", f"{duration_sec:.2f}"]
+
+    drawtext_filter = (
+        f"drawtext=fontfile={FONT_PATH}:"
+        f"text='t=%{{eif\\:t+{int(pre_seek_sec)}\\:d}}s (%{{pts\\:hms\\:{int(pre_seek_sec)}}})':"
+        f"x=10:y=h-th-10:fontsize=24:fontcolor=yellow:box=1:boxcolor=black@0.75:boxborderw=4"
+    )
+    vf = f"fps={fps_expr},scale={tile_w}:{tile_h},{drawtext_filter},tile={cols}x{rows}"
+    cmd += ["-vf", vf, "-q:v", "3", out_pattern]
+    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    return sorted(
+        os.path.join(out_dir, f)
+        for f in os.listdir(out_dir)
+        if f.startswith(f"{prefix}_") and f.endswith(".jpg")
+    )
+
+
+def extract_clean_frame(
+    video_path: str,
+    timestamp_sec: float,
+    out_path: str,
+    pre_roll: float = 4.0,
+) -> None:
+    """
+    Extract a clean full-HD frame from HEVC/MP4 without gray keyframe artifacts.
+    Uses `-ss <ts - pre_roll>` before `-i` to jump to a nearby keyframe in <1s,
+    and `-vf trim=start=<accurate_offset>` to decode cleanly to the exact target frame.
+    """
+    fast_seek = max(0.0, timestamp_sec - pre_roll)
+    accurate_offset = timestamp_sec - fast_seek
     cmd = [
-        "ffmpeg", "-y", "-i", video_path,
-        "-vf", f"trim=start={timestamp_sec}:duration=0.2,setpts=PTS-STARTPTS",
+        "ffmpeg", "-y", "-threads", "0",
+        "-ss", f"{fast_seek:.3f}",
+        "-i", video_path,
+        "-vf", f"trim=start={accurate_offset:.3f}:duration=0.2,setpts=PTS-STARTPTS",
         "-frames:v", "1", "-q:v", "2", out_path
     ]
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -35,15 +90,30 @@ def extract_10fps_verification_grid(
     crop_x: int,
     crop_y: int,
     out_path: str,
-    tile: str = "5x4"
+    tile: str = "5x4",
+    pre_roll: float = 4.0,
 ) -> None:
-    """Extract a 10fps close-up verification grid (0.1s intervals) to verify C3/A2 interactions."""
+    """
+    Extract a 10fps close-up verification grid (0.1s intervals) with burned-in 0.1s timestamps
+    using pre-seek `-ss` before `-i` + `trim=start=...` so it runs in ~1s with exact timestamps.
+    """
+    fast_seek = max(0.0, start_sec - pre_roll)
+    accurate_offset = start_sec - fast_seek
+    drawtext_filter = (
+        f"drawtext=fontfile={FONT_PATH}:"
+        f"text='%{{eif\\:t+{int(start_sec)}\\:d}}.%{{eif\\:mod(t*10\\,10)\\:d}}s':"
+        f"x=8:y=8:fontsize=22:fontcolor=lime:box=1:boxcolor=black@0.75:boxborderw=4"
+    )
+    vf = (
+        f"trim=start={accurate_offset:.3f}:duration={duration_sec:.3f},setpts=PTS-STARTPTS,"
+        f"fps=10,crop={crop_w}:{crop_h}:{crop_x}:{crop_y},"
+        f"{drawtext_filter},tile={tile}"
+    )
     cmd = [
-        "ffmpeg", "-y", "-i", video_path,
-        "-vf", (
-            f"trim=start={start_sec}:duration={duration_sec},setpts=PTS-STARTPTS,"
-            f"fps=10,crop={crop_w}:{crop_h}:{crop_x}:{crop_y},tile={tile}"
-        ),
+        "ffmpeg", "-y", "-threads", "0",
+        "-ss", f"{fast_seek:.3f}",
+        "-i", video_path,
+        "-vf", vf,
         "-frames:v", "1", "-q:v", "2", out_path
     ]
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -53,7 +123,7 @@ def annotate_violation(
     src_path: str,
     out_path: str,
     boxes: list[tuple[int, int, int, int, str, int, int]],
-    banner_text: str
+    banner_text: str,
 ) -> None:
     """
     Draw red bounding boxes, red-background text labels, and a bottom banner on a frame.
@@ -83,11 +153,12 @@ def annotate_violation(
 
 
 def upload_to_branch_folder(local_image_path: str, branch_folder_id: str) -> str:
-    """Upload annotated screenshot to Drive and move it into the branch folder."""
-    out = subprocess.check_output(["gdrive", "mutate", "upload", local_image_path], text=True)
+    """Upload annotated screenshot directly into the branch folder in 1 API call."""
+    out = subprocess.check_output(
+        ["gdrive", "mutate", "upload", local_image_path, "--parent", branch_folder_id],
+        text=True
+    )
     match = re.search(r"\(ID:\s*([^)]+)\)", out)
     if not match:
         raise RuntimeError(f"Could not parse file ID from gdrive output: {out}")
-    file_id = match.group(1).strip()
-    subprocess.run(["gdrive", "mutate", "mv", file_id, branch_folder_id], check=True)
-    return file_id
+    return match.group(1).strip()

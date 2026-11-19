@@ -19,9 +19,9 @@ Setiap kali pengguna meminta revisi atau tambahan aturan SOP, Agent WAJIB memper
 
 ## 1. Prinsip & Batasan Utama
 1. **Bukti Nyata (Strict Visual Evidence):** Nilai hanya tindakan yang benar-benar terlihat jelas di rekaman CCTV. Jangan menebak niat, percakapan, atau kejadian di luar kamera.
-2. **Anti-False-Positive (Wajib Verifikasi Multi-FPS):**
-   - **Tahap 1 (Overview Scan):** Ekstrak grid seluruh durasi video dengan `fps=1/2` (1 frame tiap 2 detik) untuk memetakan seluruh alur kedatangan user, penerimaan, penyajian air/snack, penyerahan dokumen/HP, dan perpisahan.
-   - **Tahap 2 (High-Speed Verification — `10 fps`):** Untuk setiap kandidat pelanggaran interaksi cepat—khususnya **`A2` (Air/Snack)** dan **`C3` (Serah-Terima 2 Tangan)**—**DILARANG** menyimpulkan pelanggaran hanya dari grid 2 detik atau `2 fps`. Wajib ekstrak grid close-up pada **`10 fps` (setiap `0,1` detik)** mulai dari **2 detik SEBELUM kontak hingga 2 detik SESUDAH kontak** untuk memastikan:
+2. **Anti-False-Positive & Fast Multi-FPS Verification (Wajib Gunakan `audit_helper.py`):**
+   - **Tahap 1 (Auto-Timestamped Overview Scan — `fps=1/2`):** Ekstrak contact sheet seluruh durasi video menggunakan `audit_helper.extract_overview_grids()` (`fps=1/2`, dengan *burned-in timestamp* `t=...s (HH:MM:SS)` pada setiap tile dan `-threads 0`) untuk memetakan secara presisi detik kedatangan user, penerimaan, penyajian air/snack, penyerahan dokumen/HP, dan perpisahan.
+   - **Tahap 2 (High-Speed Verification — `10 fps` dengan *Two-Stage Keyframe Pre-Seek*):** Untuk setiap kandidat pelanggaran interaksi cepat—khususnya **`A2` (Air/Snack)** dan **`C3` (Serah-Terima 2 Tangan)**—**DILARANG** menyimpulkan pelanggaran hanya dari grid 2 detik. Wajib ekstrak grid close-up pada **`10 fps` (setiap `0,1` detik)** mulai dari **2 detik SEBELUM kontak hingga 2 detik SESUDAH kontak** menggunakan `audit_helper.extract_10fps_verification_grid()` (yang menggunakan *pre-seek* `-ss <start-4>` sebelum `-i` ditambah `-vf trim=start=4:duration=...` sehingga ekstraksi di menit ke-12 pun selesai dalam ~1 detik tanpa layar abu-abu HEVC) untuk memastikan:
      - **Arah Serah-Terima (*Direction of Transfer*):** Siapa yang memegang objek di awal (apakah *User → Staf* atau *Staf → User*).
      - **Kontak Awal (*Initial Contact*):** Apakah kedua tangan staf menyentuh/memegang objek saat momen serah-terima. Jika staf sudah menyerahkan atau menerima dengan 2 tangan pada momen kontak, namun salah satu tangannya turun lebih dulu sepersekian detik saat user mengambil barang, itu **SESUAI SOP (bukan pelanggaran)**.
      - **A2 (Air/Snack):** Periksa apakah staf mengambil air/snack dari laci bawah meja atau nampan dan menawarkannya kepada user (meskipun user menolak dan staf menaruhnya kembali ke laci). Jika sudah ditawarkan, maka **`A2` SESUAI SOP**.
@@ -47,7 +47,7 @@ Setiap kali pengguna meminta revisi atau tambahan aturan SOP, Agent WAJIB memper
   - Pakaian rapi, kartu nama (*name tag*), rambut rapi, tidak berdebat dengan user.
 - **`C3` — Two-Handed Service Posture (Serah-Terima 2 Tangan):**
   - Saat menerima HP/dokumen dari user atau menyerahkan HP/dokumen/pena kepada user, staf wajib menggunakan **2 tangan**.
-  - **Wajib cek dengan `10 fps`** (2 detik sebelum s/d 2 detik sesudah kontak). Catat sebagai pelanggaran hanya jika dari awal hingga akhir serah-terima staf benar-benar hanya menggunakan 1 tangan sementara tangan satunya diam di meja/mouse/saku.
+  - **Wajib cek dengan `10 fps`** (2 detik sebelum s/d 2 detik sesudah kontak). Catat sebagai pelanggaran hanya jika dari awal hingga akhir serah-terima staf benar-benar hanya menggunakan 1 tangan sementara tangan satunya diam di meja/mouse/keyboard/saku.
 - **`C4` (Duplikat `C5` digabung jadi 1x penilaian di `C4`) — Postur Santai/Malas Saat Ada User:**
   - Saat ada user di Service Center, staf tidak boleh melipat tangan di dada, bertopang dagu, bersandar malas, atau tiduran di meja selama **> 30 detik**, serta tidak boleh bermain HP/menonton video/bermain game yang tidak terkait pekerjaan.
 - **`D1` — Handover Report (Formulir Serah-Terima & Tanda Tangan User):**
@@ -55,7 +55,7 @@ Setiap kali pengguna meminta revisi atau tambahan aturan SOP, Agent WAJIB memper
 
 ### B. Kategori `6S` (Standarisasi Cabang — Dicatat Jika Terlihat di CCTV)
 - **`6S No. 2` — Seragam & Jas Anti-Statik:**
-  - **ATURAN PENTING:** Baju kaos berwarna **krem / *beige*** adalah **seragam resmi OPPO saat ini (SESUAI SOP, BUKAN pelanggaran)**.
+  - **ATURAN PENTING:** Baju kaos berwarna **krem / *beige*** adalah **seragam resmi OPPO saat ini (SESUAI SOP, BUKAN pelanggaran)**. Catat sebagai pelanggaran hanya jika staf memakai pakaian bebas/kaos non-seragam (misalnya kaos hitam polos biasa).
   - **Jas Anti-Statik (*Anti-static coat*):** Saat ini **sudah tidak wajib digunakan (SKIP)**.
 - **`6S No. 17` — Kerapian Meja Resepsionis:**
   - Meja penerimaan pelanggan harus bersih dan rapi, tidak boleh ada tumpukan kardus/barang berantakan yang tidak seharusnya di atas meja resepsionis atau di atas printer samping meja.
@@ -77,9 +77,9 @@ Setiap kali pengguna meminta revisi atau tambahan aturan SOP, Agent WAJIB memper
   - Jika jumlah baris yang tersedia di blok tersebut penuh, gunakan `gsheets mutate insert-rows` sebelum baris `下半月 second half month`.
 - **Kolom C (`门店代码 SC code`):** Kode beserta nama cabang, contoh: `ID003006 - SC Jambi`.
 - **Kolom D (`不合格项照片 failed items photo`):**
-  1. Ekstrak frame Full-HD (`1920x1080`) yang bersih (gunakan filter `trim=start=<detik>:duration=0.2,setpts=PTS-STARTPTS` pada `ffmpeg` agar tidak terkena artefak I-frame HEVC abu-abu).
-  2. Gambar **kotak merah tebal (`width=5`)** yang melingkari/mengotaki area pelanggaran, tambahkan **label teks berlatar merah** di dekat kotak, serta **banner bawah berlatar hitam** berisi `Kode Cabang | Kode SOP | Penjelasan Singkat | Timestamp`.
-  3. Unggah gambar ke Google Drive menggunakan `gdrive mutate upload <path>` lalu pindahkan file gambar tersebut ke dalam **folder Google Drive cabang yang bersangkutan** menggunakan `gdrive mutate mv <FILE_ID> <BRANCH_FOLDER_ID>` agar otomatis mewarisi izin akses `anyoneWithLink`.
+  1. Ekstrak frame Full-HD (`1920x1080`) yang bersih menggunakan `audit_helper.extract_clean_frame()` (*pre-seek* `-ss <detik-4>` sebelum `-i` + `-vf trim=start=4:duration=0.2,setpts=PTS-STARTPTS` agar cepat dan bebas artefak I-frame HEVC abu-abu).
+  2. Gambar **kotak merah tebal (`width=5`)** yang melingkari/mengotaki area pelanggaran, tambahkan **label teks berlatar merah** di dekat kotak, serta **banner bawah berlatar hitam** berisi `Kode Cabang | Kode SOP | Penjelasan Singkat | Timestamp` menggunakan `audit_helper.annotate_violation()`.
+  3. Unggah gambar langsung ke dalam **folder Google Drive cabang yang bersangkutan** dalam 1 langkah menggunakan `gdrive mutate upload <path> --parent <BRANCH_FOLDER_ID>` (`audit_helper.upload_to_branch_folder()`) agar otomatis mewarisi izin akses `anyoneWithLink`.
   4. Tulis rumus berikut di Kolom D:
      `=IMAGE("https://drive.google.com/thumbnail?id=<FILE_ID>&sz=w1000")`
 - **Kolom E (`不合格项文字描述 Description of the unqualified item`):**
