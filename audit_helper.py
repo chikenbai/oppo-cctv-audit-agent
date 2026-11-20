@@ -90,23 +90,27 @@ def extract_10fps_verification_grid(
     crop_x: int,
     crop_y: int,
     out_path: str,
-    tile: str = "5x4",
+    tile: str = "4x4",
+    fps: float = 5.0,
+    tile_w: int = 450,
+    tile_h: int = 400,
     pre_roll: float = 4.0,
 ) -> None:
     """
-    Extract a 10fps close-up verification grid (0.1s intervals) with burned-in 0.1s timestamps
-    using pre-seek `-ss` before `-i` + `trim=start=...` so it runs in ~1s with exact timestamps.
+    Extract a high-resolution 4x4 close-up verification grid (450x400 per tile = 1800x1600 total,
+    max 16 frames per image) with burned-in 0.1s timestamps so hands and objects are crystal clear.
+    NEVER use 8x10 or 10x10 grids (which shrink tiles too small and cause false-positive C3 hallucinations).
     """
     fast_seek = max(0.0, start_sec - pre_roll)
     accurate_offset = start_sec - fast_seek
     drawtext_filter = (
         f"drawtext=fontfile={FONT_PATH}:"
         f"text='%{{eif\\:t+{int(start_sec)}\\:d}}.%{{eif\\:mod(t*10\\,10)\\:d}}s':"
-        f"x=8:y=8:fontsize=22:fontcolor=lime:box=1:boxcolor=black@0.75:boxborderw=4"
+        f"x=10:y=10:fontsize=28:fontcolor=yellow:box=1:boxcolor=black@0.8:boxborderw=5"
     )
     vf = (
         f"trim=start={accurate_offset:.3f}:duration={duration_sec:.3f},setpts=PTS-STARTPTS,"
-        f"fps=10,crop={crop_w}:{crop_h}:{crop_x}:{crop_y},"
+        f"fps={fps},crop={crop_w}:{crop_h}:{crop_x}:{crop_y},scale={tile_w}:{tile_h},"
         f"{drawtext_filter},tile={tile}"
     )
     cmd = [
