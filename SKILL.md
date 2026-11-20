@@ -51,19 +51,22 @@ Setiap kali pengguna meminta revisi atau tambahan aturan SOP, Agent WAJIB memper
   - **Wajib cek dengan grid `4x4` resolusi tinggi (`450x400` per tile)**. Pastikan benar-benar terjadi perpindahan barang antara tangan staf dan tangan user (bukan staf memindahkan kertas/stempel/mouse di mejanya sendiri). Catat sebagai pelanggaran hanya jika dari awal hingga akhir serah-terima barang dengan user, staf benar-benar hanya menggunakan 1 tangan sementara tangan satunya diam di meja/mouse/keyboard/saku.
 - **`C4` (Duplikat `C5` digabung jadi 1x penilaian di `C4`) — Postur Santai/Malas Saat Ada User:**
   - Saat ada user di Service Center, staf tidak boleh melipat tangan di dada, bertopang dagu, bersandar malas, atau tiduran di meja selama **> 30 detik**, serta tidak boleh bermain HP/menonton video/bermain game yang tidak terkait pekerjaan.
-- **`D1` — Handover Report (Formulir Serah-Terima & Tanda Tangan User):**
-  - Mencetak formulir tanda terima (*handover report*) dan menyerahkannya kepada user untuk ditandatangani.
+- **`D1` — Handover Report / Invoice (Formulir Serah-Terima & Invoice):**
+  - Wajib periksa apakah staf mencetak dan memberikan **invoice / formulir serah-terima (*handover report*)** kepada user sebelum perbaikan atau sebelum user meninggalkan Service Center. Jika layanan selesai hingga user berdiri dan pulang tanpa diberikan cetakan invoice/handover report sama sekali, WAJIB dicatat sebagai pelanggaran `D1`.
 
 ### B. Kategori `6S` (Standarisasi Cabang — Dicatat Jika Terlihat di CCTV)
-- **`6S No. 2` — Seragam & Jas Anti-Statik:**
-  - **ATURAN PENTING:** Baju kaos berwarna **krem / *beige*** adalah **seragam resmi OPPO saat ini (SESUAI SOP, BUKAN pelanggaran)**. Catat sebagai pelanggaran hanya jika staf memakai pakaian bebas/kaos non-seragam (misalnya kaos hitam polos biasa).
+- **`6S No. 1 / No. 2` — Seragam Kerja Wajib Beige & Jas Anti-Statik:**
+  - **ATURAN PENTING:** Seragam resmi OPPO saat ini adalah **baju kaos berwarna krem / *beige***. Catat sebagai pelanggaran (`6S No. 1`) jika staf CS/resepsionis mengenakan pakaian selain kaos *beige* resmi—termasuk **kemeja putih**, kaos hitam polos, atau pakaian bebas lainnya.
   - **Jas Anti-Statik (*Anti-static coat*):** Saat ini **sudah tidak wajib digunakan (SKIP)**.
 - **`6S No. 17` — Kerapian Meja Resepsionis:**
   - Meja penerimaan pelanggan harus bersih dan rapi, tidak boleh ada tumpukan kardus/barang berantakan yang tidak seharusnya di atas meja resepsionis atau di atas printer samping meja.
-- **`6S No. 18` — Meninggalkan Meja Resepsionis Tanpa Papan "CLOSED" (`暂停服务`):**
+- **`6S No. 18` — Papan Counter / Papan "CLOSED" (`暂停服务`):**
   - **ATURAN PENTING:**
-    1. Jika staf meninggalkan meja karena **sedang dalam proses melayani user** (misalnya mengambil unit/sparepart/dokumen untuk user yang sedang dilayani), **TIDAK PERLU** membalikkan papan *CLOSED* (bukan pelanggaran).
-    2. Batas toleransi waktu meninggalkan meja kosong tanpa papan *CLOSED* adalah **10 menit**. Jika meninggalkan meja **di bawah 10 menit**, tidak masalah jika tidak membalikkan papan.
+    1. **Saat Ada Staf Standby/Melayani (Wajib Cek Arah Papan!):** Periksa papan nomor counter di pojok meja tempat staf standby. Jika sisi yang menghadap staf/belakang menampilkan angka nomor meja (misalnya angka `"1"`), artinya papan **tidak dibalikkan** sehingga dari sisi user terbaca **"CLOSED" / "Tidak Menerima User"** padahal ada staf yang standby—ini **WAJIB dicatat sebagai pelanggaran `6S No. 18`**.
+    2. Jika staf meninggalkan meja karena **sedang dalam proses melayani user** (misalnya mengambil unit/sparepart/dokumen untuk user yang sedang dilayani), **TIDAK PERLU** membalikkan papan *CLOSED* (bukan pelanggaran).
+    3. Batas toleransi waktu meninggalkan meja kosong tanpa papan *CLOSED* adalah **10 menit**. Jika meninggalkan meja **di bawah 10 menit**, tidak masalah jika tidak membalikkan papan.
+- **`6S No. 63` — Nampan Permen / Camilan di Meja Layanan (Refill):**
+  - Wajib periksa nampan besi/wadah permen & camilan di meja perbaikan sisi tempat duduk user. Jika isi permen kosong atau **hampir habis (hanya tersisa beberapa pcs)** dan tidak di-refill oleh staf, **WAJIB dicatat sebagai pelanggaran `6S No. 63`**.
 - **`6S No. 60–62` — Mesin Antrean (*Queuing Machine*):**
   - **SKIP** (Service Center sudah tidak menggunakan mesin nomor antrean).
 
